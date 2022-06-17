@@ -46,7 +46,6 @@ type RealmUserProfile struct {
 }
 
 func (keycloakClient *KeycloakClient) UpdateRealmUserProfile(ctx context.Context, realmId string, realmUserProfile *RealmUserProfile) error {
-	fmt.Println(*realmUserProfile)
 	return keycloakClient.put(ctx, fmt.Sprintf("/realms/%s/users/profile", realmId), realmUserProfile)
 }
 
