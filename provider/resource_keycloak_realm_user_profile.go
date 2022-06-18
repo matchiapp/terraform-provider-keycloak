@@ -2,8 +2,7 @@ package provider
 
 import (
 	"context"
-	"fmt"
-	"strings"
+	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -85,9 +84,8 @@ func resourceKeycloakRealmUserProfile() *schema.Resource {
 										Required: true,
 									},
 									"config": {
-										Type:     schema.TypeMap,
+										Type:     schema.TypeString,
 										Optional: true,
-										Elem:     &schema.Schema{Type: schema.TypeString},
 									},
 								},
 							},
@@ -182,30 +180,14 @@ func getRealmUserProfileAttributeFromData(m map[string]interface{}) *keycloak.Re
 			}
 
 			config := make(map[string]interface{})
-
 			if v, ok := validationConfig["config"]; ok {
-
-				// Special case for options
-				if name == "options" {
-
-					sep := ","
-					if s, ok := v.(map[string]interface{})["separator"]; ok {
-						sep = s.(string)
-					}
-
-					if options, ok := v.(map[string]interface{})["options"]; ok {
-						config["options"] = strings.Split(options.(string), sep)
-					}
-
-				} else {
-					for key, value := range v.(map[string]interface{}) {
-						config[key] = value
-					}
+				c := make(map[string]interface{})
+				if err := json.Unmarshal([]byte(v.(string)), &c); err == nil {
+					config = c
 				}
-
 			}
-
 			validations[name] = config
+
 		}
 		attribute.Validations = validations
 	}
@@ -322,24 +304,8 @@ func getRealmUserProfileAttributeData(attr *keycloak.RealmUserProfileAttribute) 
 
 			validator["name"] = name
 
-			if name == "options" {
-				sep := ","
-				if s, ok := config["separator"]; ok {
-					sep = s.(string)
-				}
-
-				opts := make([]string, 0)
-
-				for _, v := range config["options"].([]interface{}) {
-					opts = append(opts, fmt.Sprint(v))
-				}
-
-				if len(opts) != 0 {
-					config["options"] = strings.Join(opts, sep)
-				}
-			}
-
-			validator["config"] = config
+			c, _ := json.Marshal(config)
+			validator["config"] = string(c)
 
 			validations = append(validations, validator)
 		}

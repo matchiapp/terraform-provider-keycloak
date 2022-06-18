@@ -75,7 +75,9 @@ func TestAccKeycloakRealmUserProfile_basicFull(t *testing.T) {
 				},
 				Validations: map[string]keycloak.RealmUserProfileValidationConfig{
 					"person-name-prohibited-characters": map[string]interface{}{},
-					"pattern":                           map[string]interface{}{"pattern": "^[a-z]+$", "error_message": "Error!"},
+					"pattern": map[string]interface{}{
+						"pattern":       `"^[a-z]+$"`,
+						"error_message": `"Error!"`},
 				},
 				Annotations: map[string]string{"foo": "bar"},
 			},
@@ -83,7 +85,7 @@ func TestAccKeycloakRealmUserProfile_basicFull(t *testing.T) {
 				Name: "attribute3",
 				Validations: map[string]keycloak.RealmUserProfileValidationConfig{
 					"options": map[string]interface{}{
-						"options": "option1,option2,option3",
+						"options": `["option1", "option2", "option3"]`,
 					},
 				},
 			},
@@ -173,7 +175,7 @@ func TestAccKeycloakRealmUserProfile_attributeValidator(t *testing.T) {
 			{
 				Name: "attribute",
 				Validations: map[string]keycloak.RealmUserProfileValidationConfig{
-					"length": map[string]interface{}{"min": "5", "max": "10"},
+					"length": map[string]interface{}{"min": 5, "max": 10},
 				},
 			},
 		},
@@ -184,7 +186,7 @@ func TestAccKeycloakRealmUserProfile_attributeValidator(t *testing.T) {
 			{
 				Name: "attribute",
 				Validations: map[string]keycloak.RealmUserProfileValidationConfig{
-					"length": map[string]interface{}{"min": "6", "max": "10"},
+					"length": map[string]interface{}{"min": 6, "max": 10},
 				},
 			},
 		},
@@ -196,7 +198,7 @@ func TestAccKeycloakRealmUserProfile_attributeValidator(t *testing.T) {
 				Name: "attribute",
 				Validations: map[string]keycloak.RealmUserProfileValidationConfig{
 					"person-name-prohibited-characters": map[string]interface{}{},
-					"length":                            map[string]interface{}{"min": "6", "max": "10"},
+					"length":                            map[string]interface{}{"min": 6, "max": 10},
 				},
 			},
 		},
@@ -411,11 +413,11 @@ resource "keycloak_realm_user_profile" "realm_user_profile" {
         validator {
             name = "{{ $name }}"
             {{- if $config }}
-            config = {
+            config = jsonencode({
                 {{- range $key, $value := $config }}
-                {{ $key }} = "{{ $value }}"
+                "{{ $key }}" = {{ $value }},
                 {{- end }}
-            }
+            })
             {{- end }}
         }
 		{{- end }}
