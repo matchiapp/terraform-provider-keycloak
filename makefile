@@ -5,6 +5,12 @@ MAKEFLAGS += --silent
 build:
 	go build -o terraform-provider-keycloak
 
+build-example-arm: build
+	mkdir -p example/.terraform/plugins/terraform.local/mrparkers/keycloak/3.0.0/darwin_arm64
+	mkdir -p example/terraform.d/plugins/terraform.local/mrparkers/keycloak/3.0.0/darwin_arm64
+	cp terraform-provider-keycloak example/.terraform/plugins/terraform.local/mrparkers/keycloak/3.0.0/darwin_arm64/
+	cp terraform-provider-keycloak example/terraform.d/plugins/terraform.local/mrparkers/keycloak/3.0.0/darwin_arm64/
+
 build-example: build
 	mkdir -p example/.terraform/plugins/terraform.local/mrparkers/keycloak/3.0.0/darwin_amd64
 	mkdir -p example/terraform.d/plugins/terraform.local/mrparkers/keycloak/3.0.0/darwin_amd64

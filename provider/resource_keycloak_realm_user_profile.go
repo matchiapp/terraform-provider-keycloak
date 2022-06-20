@@ -300,7 +300,7 @@ func getRealmUserProfileAttributeFromData(m map[string]interface{}) *keycloak.Re
 	if v, ok := m["validator"]; ok {
 		validations := keycloak.RealmUserProfileValidationConfig{}
 
-		data := v.([]interface{})[0].(map[string]interface{})
+		_ = v.([]interface{})[0].(map[string]interface{})
 
 		// TODO
 
