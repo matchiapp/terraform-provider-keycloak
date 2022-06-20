@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"regexp"
 	"strings"
 	"testing"
@@ -73,21 +74,21 @@ func TestAccKeycloakRealmUserProfile_basicFull(t *testing.T) {
 					View: []string{"admin", "user"},
 				},
 				Validations: map[string]keycloak.RealmUserProfileValidationConfig{
-					"person-name-prohibited-characters": map[string]interface{}{},
+					"person-name-prohibited-characters": nil,
 					"pattern": map[string]interface{}{
-						"pattern":       `"^[a-z]+$"`,
-						"error_message": `"Error!"`},
+						"pattern":       "^[a-z]+$",
+						"error_message": "Error!"},
 				},
 				Annotations: map[string]string{"foo": "bar"},
 			},
-			{
-				Name: "attribute3",
-				Validations: map[string]keycloak.RealmUserProfileValidationConfig{
-					"options": map[string]interface{}{
-						"options": `["option1","option2","option3"]`,
-					},
-				},
-			},
+			// {
+			// 	Name: "attribute3",
+			// 	Validations: map[string]keycloak.RealmUserProfileValidationConfig{
+			// 		"options": map[string]interface{}{
+			// 			"options": `["option1","option2","option3"]`,
+			// 		},
+			// 	},
+			// },
 		},
 		Groups: []*keycloak.RealmUserProfileGroup{
 			{Name: "group", DisplayDescription: "Description", DisplayHeader: "Header", Annotations: map[string]string{"foo": "bar"}},
@@ -107,6 +108,10 @@ func TestAccKeycloakRealmUserProfile_basicFull(t *testing.T) {
 			},
 		},
 	})
+}
+
+func TestAccKeycloakRealmUserProfile_basicOptions(t *testing.T) {
+
 }
 
 func TestAccKeycloakRealmUserProfile_group(t *testing.T) {
@@ -174,7 +179,7 @@ func TestAccKeycloakRealmUserProfile_attributeValidator(t *testing.T) {
 			{
 				Name: "attribute",
 				Validations: map[string]keycloak.RealmUserProfileValidationConfig{
-					"length": map[string]interface{}{"min": 5, "max": 10},
+					"length": map[string]interface{}{"min": "5", "max": "10"},
 				},
 			},
 		},
@@ -185,7 +190,7 @@ func TestAccKeycloakRealmUserProfile_attributeValidator(t *testing.T) {
 			{
 				Name: "attribute",
 				Validations: map[string]keycloak.RealmUserProfileValidationConfig{
-					"length": map[string]interface{}{"min": 6, "max": 10},
+					"length": map[string]interface{}{"min": "6", "max": "10"},
 				},
 			},
 		},
@@ -197,7 +202,7 @@ func TestAccKeycloakRealmUserProfile_attributeValidator(t *testing.T) {
 				Name: "attribute",
 				Validations: map[string]keycloak.RealmUserProfileValidationConfig{
 					"person-name-prohibited-characters": map[string]interface{}{},
-					"length":                            map[string]interface{}{"min": 6, "max": 10},
+					"length":                            map[string]interface{}{"min": "6", "max": "10"},
 				},
 			},
 		},
@@ -414,7 +419,7 @@ resource "keycloak_realm_user_profile" "realm_user_profile" {
             {{- if $config }}
             config = jsonencode({
                 {{- range $key, $value := $config }}
-                "{{ $key }}" = {{ $value }},
+                "{{ $key }}" = "{{ $value }}",
                 {{- end }}
             })
             {{- end }}
@@ -488,15 +493,15 @@ func testAccCheckKeycloakRealmUserProfileStateEqual(resourceName string, realmUs
 			return err
 		}
 
-		j1, _ := json.Marshal(realmUserProfile)
-		j2, _ := json.Marshal(realmUserProfileFromState)
+		// s1 := strings.ReplaceAll(string(j1), "\\", "")
+		// s1 = strings.ReplaceAll(s1, "\"\"", "\"")
+		// s1 = strings.ReplaceAll(s1, "\"[", "[")
+		// s1 = strings.ReplaceAll(s1, "]\"", "]")
 
-		s1 := strings.ReplaceAll(string(j1), "\\", "")
-		s1 = strings.ReplaceAll(s1, "\"\"", "\"")
-		s1 = strings.ReplaceAll(s1, "\"[", "[")
-		s1 = strings.ReplaceAll(s1, "]\"", "]")
+		if !reflect.DeepEqual(realmUserProfile, realmUserProfileFromState) {
+			j1, _ := json.Marshal(realmUserProfile)
+			j2, _ := json.Marshal(realmUserProfileFromState)
 
-		if s1 != string(j2) {
 			return fmt.Errorf("%v\nshould be equal to\n%v", string(j1), string(j2))
 		}
 

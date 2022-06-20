@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"encoding/json"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -79,13 +80,132 @@ func resourceKeycloakRealmUserProfile() *schema.Resource {
 							Optional: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
-									"name": {
-										Type:     schema.TypeString,
-										Required: true,
-									},
-									"config": {
-										Type:     schema.TypeString,
+									"length": {
+										Type:     schema.TypeSet,
 										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"min": {
+													Type:     schema.TypeInt,
+													Optional: true,
+												},
+												"max": {
+													Type:     schema.TypeInt,
+													Optional: true,
+												},
+												"trim_disabled": {
+													Type:     schema.TypeBool,
+													Optional: true,
+												},
+											},
+										},
+									},
+									"integer": {
+										Type:     schema.TypeSet,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"min": {
+													Type:     schema.TypeInt,
+													Optional: true,
+												},
+												"max": {
+													Type:     schema.TypeInt,
+													Optional: true,
+												},
+											},
+										},
+									},
+									"double": {
+										Type:     schema.TypeSet,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"min": {
+													Type:     schema.TypeFloat,
+													Optional: true,
+												},
+												"max": {
+													Type:     schema.TypeFloat,
+													Optional: true,
+												},
+											},
+										},
+									},
+									"uri": {
+										Type:     schema.TypeSet,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{},
+										},
+									},
+									"pattern": {
+										Type:     schema.TypeSet,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"pattern": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"error_message": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+									"email": {
+										Type:     schema.TypeSet,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{},
+										},
+									},
+									"local_date": {
+										Type:     schema.TypeSet,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{},
+										},
+									},
+									"person_name_prohibited_characters": {
+										Type:     schema.TypeSet,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"error_message": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+									"username_prohibited_characters": {
+										Type:     schema.TypeSet,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"error_message": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+									"options": {
+										Type:     schema.TypeSet,
+										Optional: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"options": {
+													Type:     schema.TypeSet,
+													Set:      schema.HashString,
+													Optional: true,
+													Elem:     &schema.Schema{Type: schema.TypeString},
+												},
+											},
+										},
 									},
 								},
 							},
@@ -173,20 +293,10 @@ func getRealmUserProfileAttributeFromData(m map[string]interface{}) *keycloak.Re
 		for _, validator := range v.(*schema.Set).List() {
 			validationConfig := validator.(map[string]interface{})
 
-			name := validationConfig["name"].(string)
-
-			if name == "" {
-				continue
+			for k, v := range validationConfig {
+				k = strings.ReplaceAll(k, "_", "-")
+				validations[k] = v.(map[string]interface{})
 			}
-
-			config := make(map[string]interface{})
-			if v, ok := validationConfig["config"]; ok {
-				c := make(map[string]interface{})
-				if err := json.Unmarshal([]byte(v.(string)), &c); err == nil {
-					config = c
-				}
-			}
-			validations[name] = config
 
 		}
 		attribute.Validations = validations
