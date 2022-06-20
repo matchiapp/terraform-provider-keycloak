@@ -20,17 +20,59 @@ type RealmUserProfileSelector struct {
 	Scopes []string `json:"scopes,omitempty"`
 }
 
-type RealmUserProfileValidationConfig map[string]interface{}
+type RealmUserProfileValidationConfig struct {
+	Length struct {
+		Min          int  `json:"min,omitempty"`
+		Max          int  `json:"max,omitempty"`
+		TrimDisabled bool `json:"trim_disabled,omitempty"`
+	} `json:"length,omitempty"`
+
+	Integer struct {
+		Min int `json:"min,omitempty"`
+		Max int `json:"max,omitempty"`
+	} `json:"integer,omitempty"`
+
+	Double struct {
+		Min float64 `json:"min,omitempty"`
+		Max float64 `json:"max,omitempty"`
+	} `json:"double,omitempty"`
+
+	URI struct {
+	} `json:"uri,omitempty"`
+
+	Pattern struct {
+		Pattern      string `json:"pattern,omitempty"`
+		ErrorMessage string `json:"error-message,omitempty"`
+	} `json:"pattern,omitempty"`
+
+	Email struct {
+	} `json:"email,omitempty"`
+
+	LocalDate struct {
+	} `json:"local-date,omitempty"`
+
+	PersonNameProhibitedCharacters struct {
+		ErrorMessage string `json:"error-message,omitempty"`
+	} `json:"person-name-prohibited-characters,omitempty"`
+
+	UsernameProhibitedCharacters struct {
+		ErrorMessage string `json:"error-message,omitempty"`
+	} `json:"username-prohibited-characters,omitempty"`
+
+	Options struct {
+		Options []string `json:"options,omitempty"`
+	} `json:"options,omitempty"`
+}
 
 type RealmUserProfileAttribute struct {
-	Annotations map[string]string                           `json:"annotations,omitempty"`
-	DisplayName string                                      `json:"displayName,omitempty"`
-	Group       string                                      `json:"group,omitempty"`
-	Name        string                                      `json:"name"`
-	Permissions *RealmUserProfilePermissions                `json:"permissions,omitempty"`
-	Required    *RealmUserProfileRequired                   `json:"required,omitempty"`
-	Selector    *RealmUserProfileSelector                   `json:"selector,omitempty"`
-	Validations map[string]RealmUserProfileValidationConfig `json:"validations,omitempty"`
+	Annotations map[string]string                 `json:"annotations,omitempty"`
+	DisplayName string                            `json:"displayName,omitempty"`
+	Group       string                            `json:"group,omitempty"`
+	Name        string                            `json:"name"`
+	Permissions *RealmUserProfilePermissions      `json:"permissions,omitempty"`
+	Required    *RealmUserProfileRequired         `json:"required,omitempty"`
+	Selector    *RealmUserProfileSelector         `json:"selector,omitempty"`
+	Validations *RealmUserProfileValidationConfig `json:"validations,omitempty"`
 }
 
 type RealmUserProfileGroup struct {

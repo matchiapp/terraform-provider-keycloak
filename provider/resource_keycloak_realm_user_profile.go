@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -76,12 +75,14 @@ func resourceKeycloakRealmUserProfile() *schema.Resource {
 							},
 						},
 						"validator": {
-							Type:     schema.TypeSet,
+							Type:     schema.TypeList,
+							MaxItems: 1,
 							Optional: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"length": {
-										Type:     schema.TypeSet,
+										Type:     schema.TypeList,
+										MaxItems: 1,
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
@@ -101,7 +102,8 @@ func resourceKeycloakRealmUserProfile() *schema.Resource {
 										},
 									},
 									"integer": {
-										Type:     schema.TypeSet,
+										Type:     schema.TypeList,
+										MaxItems: 1,
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
@@ -117,7 +119,8 @@ func resourceKeycloakRealmUserProfile() *schema.Resource {
 										},
 									},
 									"double": {
-										Type:     schema.TypeSet,
+										Type:     schema.TypeList,
+										MaxItems: 1,
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
@@ -133,14 +136,16 @@ func resourceKeycloakRealmUserProfile() *schema.Resource {
 										},
 									},
 									"uri": {
-										Type:     schema.TypeSet,
+										Type:     schema.TypeList,
+										MaxItems: 1,
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{},
 										},
 									},
 									"pattern": {
-										Type:     schema.TypeSet,
+										Type:     schema.TypeList,
+										MaxItems: 1,
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
@@ -156,21 +161,24 @@ func resourceKeycloakRealmUserProfile() *schema.Resource {
 										},
 									},
 									"email": {
-										Type:     schema.TypeSet,
+										Type:     schema.TypeList,
+										MaxItems: 1,
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{},
 										},
 									},
 									"local_date": {
-										Type:     schema.TypeSet,
+										Type:     schema.TypeList,
+										MaxItems: 1,
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{},
 										},
 									},
 									"person_name_prohibited_characters": {
-										Type:     schema.TypeSet,
+										Type:     schema.TypeList,
+										MaxItems: 1,
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
@@ -182,7 +190,8 @@ func resourceKeycloakRealmUserProfile() *schema.Resource {
 										},
 									},
 									"username_prohibited_characters": {
-										Type:     schema.TypeSet,
+										Type:     schema.TypeList,
+										MaxItems: 1,
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
@@ -194,7 +203,8 @@ func resourceKeycloakRealmUserProfile() *schema.Resource {
 										},
 									},
 									"options": {
-										Type:     schema.TypeSet,
+										Type:     schema.TypeList,
+										MaxItems: 1,
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
@@ -288,18 +298,13 @@ func getRealmUserProfileAttributeFromData(m map[string]interface{}) *keycloak.Re
 	}
 
 	if v, ok := m["validator"]; ok {
-		validations := make(map[string]keycloak.RealmUserProfileValidationConfig)
+		validations := keycloak.RealmUserProfileValidationConfig{}
 
-		for _, validator := range v.(*schema.Set).List() {
-			validationConfig := validator.(map[string]interface{})
+		data := v.([]interface{})[0].(map[string]interface{})
 
-			for k, v := range validationConfig {
-				k = strings.ReplaceAll(k, "_", "-")
-				validations[k] = v.(map[string]interface{})
-			}
+		// TODO
 
-		}
-		attribute.Validations = validations
+		attribute.Validations = &validations
 	}
 
 	required := &keycloak.RealmUserProfileRequired{}
