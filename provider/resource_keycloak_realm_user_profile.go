@@ -208,8 +208,7 @@ func resourceKeycloakRealmUserProfile() *schema.Resource {
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 												"options": {
-													Type:     schema.TypeSet,
-													Set:      schema.HashString,
+													Type:     schema.TypeList,
 													Optional: true,
 													Elem:     &schema.Schema{Type: schema.TypeString},
 												},
@@ -326,7 +325,7 @@ func getRealmUserProfileAttributeFromData(m map[string]interface{}) *keycloak.Re
 			}
 		}
 
-		if _, ok := data["uri"]; ok {
+		if val, ok := data["uri"]; ok && len(val.([]interface{})) > 0 {
 			validations.URI = &map[string]interface{}{}
 		}
 
@@ -338,11 +337,11 @@ func getRealmUserProfileAttributeFromData(m map[string]interface{}) *keycloak.Re
 			}
 		}
 
-		if _, ok := data["email"]; ok {
+		if val, ok := data["email"]; ok && len(val.([]interface{})) > 0 {
 			validations.Email = &map[string]interface{}{}
 		}
 
-		if _, ok := data["local_date"]; ok {
+		if val, ok := data["local_date"]; ok && len(val.([]interface{})) > 0 {
 			validations.LocalDate = &map[string]interface{}{}
 		}
 
@@ -370,7 +369,7 @@ func getRealmUserProfileAttributeFromData(m map[string]interface{}) *keycloak.Re
 		if val, ok := data["options"]; ok && len(val.([]interface{})) > 0 {
 			r := val.([]interface{})[0].(map[string]interface{})
 			validations.Options = &keycloak.RealmUserProfileValidationOptions{
-				Options: r["options"].([]string),
+				Options: interfaceSliceToStringSlice(r["options"].([]interface{})),
 			}
 		}
 
@@ -402,10 +401,11 @@ func getRealmUserProfileAttributeFromData(m map[string]interface{}) *keycloak.Re
 
 }
 
-func getRealmUserProfileAttributesFromData(lst []interface{}) []*keycloak.RealmUserProfileAttribute {
+func getRealmUserProfileAttributesFromData(data *schema.ResourceData) []*keycloak.RealmUserProfileAttribute {
+
 	attributes := make([]*keycloak.RealmUserProfileAttribute, 0)
 
-	for _, m := range lst {
+	for _, m := range data.Get("attribute").([]interface{}) {
 		userProfileAttribute := getRealmUserProfileAttributeFromData(m.(map[string]interface{}))
 		if userProfileAttribute.Name != "" {
 			attributes = append(attributes, userProfileAttribute)
@@ -449,7 +449,7 @@ func getRealmUserProfileGroupsFromData(lst []interface{}) []*keycloak.RealmUserP
 func getRealmUserProfileFromData(data *schema.ResourceData) *keycloak.RealmUserProfile {
 	realmUserProfile := &keycloak.RealmUserProfile{}
 
-	realmUserProfile.Attributes = getRealmUserProfileAttributesFromData(data.Get("attribute").([]interface{}))
+	realmUserProfile.Attributes = getRealmUserProfileAttributesFromData(data)
 	realmUserProfile.Groups = getRealmUserProfileGroupsFromData(data.Get("group").(*schema.Set).List())
 
 	return realmUserProfile
