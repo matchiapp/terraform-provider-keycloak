@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"reflect"
 	"regexp"
 	"strings"
 	"testing"
@@ -85,7 +84,7 @@ func TestAccKeycloakRealmUserProfile_basicFull(t *testing.T) {
 				Name: "attribute3",
 				Validations: map[string]keycloak.RealmUserProfileValidationConfig{
 					"options": map[string]interface{}{
-						"options": `["option1", "option2", "option3"]`,
+						"options": `["option1","option2","option3"]`,
 					},
 				},
 			},
@@ -489,9 +488,15 @@ func testAccCheckKeycloakRealmUserProfileStateEqual(resourceName string, realmUs
 			return err
 		}
 
-		if !reflect.DeepEqual(realmUserProfile, realmUserProfileFromState) {
-			j1, _ := json.Marshal(realmUserProfile)
-			j2, _ := json.Marshal(realmUserProfileFromState)
+		j1, _ := json.Marshal(realmUserProfile)
+		j2, _ := json.Marshal(realmUserProfileFromState)
+
+		s1 := strings.ReplaceAll(string(j1), "\\", "")
+		s1 = strings.ReplaceAll(s1, "\"\"", "\"")
+		s1 = strings.ReplaceAll(s1, "\"[", "[")
+		s1 = strings.ReplaceAll(s1, "]\"", "]")
+
+		if s1 != string(j2) {
 			return fmt.Errorf("%v\nshould be equal to\n%v", string(j1), string(j2))
 		}
 
