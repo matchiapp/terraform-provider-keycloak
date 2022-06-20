@@ -3,8 +3,8 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/mrparkers/terraform-provider-keycloak/keycloak"
@@ -292,10 +292,17 @@ func getRealmUserProfileAttributeFromData(m map[string]interface{}) *keycloak.Re
 
 		for _, validator := range v.(*schema.Set).List() {
 			validationConfig := validator.(map[string]interface{})
+			tflog.Info(context.Background(), "Logging validator", map[string]interface{}{
+				"validator":        validator,
+				"validationConfig": validationConfig,
+			})
 
-			for k, v := range validationConfig {
-				k = strings.ReplaceAll(k, "_", "-")
-				validations[k] = v.(map[string]interface{})
+			for _, v := range validationConfig {
+				tflog.Info(context.Background(), "Logging validationConfig", map[string]interface{}{
+					"value": v,
+				})
+				// k = strings.ReplaceAll(k, "_", "-")
+				// validations[k] = v.(map[string]interface{})
 			}
 
 		}
