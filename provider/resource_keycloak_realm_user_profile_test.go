@@ -73,12 +73,14 @@ func TestAccKeycloakRealmUserProfile_basicFull(t *testing.T) {
 					Edit: []string{"admin", "user"},
 					View: []string{"admin", "user"},
 				},
-				// Validations: map[string]keycloak.RealmUserProfileValidationConfig{
-				// 	"person-name-prohibited-characters": nil,
-				// 	"pattern": map[string]interface{}{
-				// 		"pattern":       "^[a-z]+$",
-				// 		"error_message": "Error!"},
-				// },
+				Validations: &keycloak.RealmUserProfileValidationConfig{
+					Pattern: &keycloak.RealmUserProfileValidationPattern{
+						Pattern:      "^[a-z]+$",
+						ErrorMessage: "Error!",
+					},
+					PersonNameProhibitedChars: &keycloak.RealmUserProfileValidationProhibited{},
+				},
+
 				Annotations: map[string]string{"foo": "bar"},
 			},
 			// {
@@ -108,10 +110,6 @@ func TestAccKeycloakRealmUserProfile_basicFull(t *testing.T) {
 			},
 		},
 	})
-}
-
-func TestAccKeycloakRealmUserProfile_basicOptions(t *testing.T) {
-
 }
 
 func TestAccKeycloakRealmUserProfile_group(t *testing.T) {
@@ -413,18 +411,22 @@ resource "keycloak_realm_user_profile" "realm_user_profile" {
 		{{- end }}
 
 		{{- if $attribute.Validations }}
-		{{ range $name, $config := $attribute.Validations }}
         validator {
-            name = "{{ $name }}"
-            {{- if $config }}
-            config = jsonencode({
-                {{- range $key, $value := $config }}
-                "{{ $key }}" = "{{ $value }}",
-                {{- end }}
-            })
-            {{- end }}
+            {{- if $attribute.Validations.Pattern }}
+			pattern {
+				pattern = "{{ $attribute.Validations.Pattern.Pattern }}"
+				error_message = "{{ $attribute.Validations.Pattern.ErrorMessage }}"
+			}
+			{{- end }}
+
+			{{- if $attribute.Validations.PersonNameProhibitedChars }}
+			person_name_prohibited_characters {
+				{{- if $attribute.Validations.PersonNameProhibitedChars.ErrorMessage }}
+				error_message = "{{ $attribute.Validations.PersonNameProhibitedChars.ErrorMessage }}"
+				{{- end }}
+			}
+			{{- end}}
         }
-		{{- end }}
 		{{- end }}
 
 		{{- if $attribute.Annotations }}
