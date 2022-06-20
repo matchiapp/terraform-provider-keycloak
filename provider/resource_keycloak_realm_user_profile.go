@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -297,12 +296,83 @@ func getRealmUserProfileAttributeFromData(m map[string]interface{}) *keycloak.Re
 		}
 	}
 
-	if v, ok := m["validator"]; ok {
+	if v, ok := m["validator"]; ok && len(v.([]interface{})) > 0 {
 		validations := keycloak.RealmUserProfileValidationConfig{}
 
-		_ = v.([]interface{})[0].(map[string]interface{})
+		data := v.([]interface{})[0].(map[string]interface{})
 
-		// TODO
+		if val, ok := data["length"]; ok && len(val.([]interface{})) > 0 {
+			r := val.([]interface{})[0].(map[string]interface{})
+			validations.Length = &keycloak.RealmUserProfileValidationLength{
+				Min:          r["min"].(int),
+				Max:          r["max"].(int),
+				TrimDisabled: r["trim_disabled"].(bool),
+			}
+		}
+
+		if val, ok := data["integer"]; ok && len(val.([]interface{})) > 0 {
+			r := val.([]interface{})[0].(map[string]interface{})
+			validations.Integer = &keycloak.RealmUserProfileValidationInteger{
+				Min: r["min"].(int),
+				Max: r["max"].(int),
+			}
+		}
+
+		if val, ok := data["double"]; ok && len(val.([]interface{})) > 0 {
+			r := val.([]interface{})[0].(map[string]interface{})
+			validations.Double = &keycloak.RealmUserProfileValidationDouble{
+				Min: r["min"].(float64),
+				Max: r["max"].(float64),
+			}
+		}
+
+		if _, ok := data["uri"]; ok {
+			validations.URI = &map[string]interface{}{}
+		}
+
+		if val, ok := data["pattern"]; ok && len(val.([]interface{})) > 0 {
+			r := val.([]interface{})[0].(map[string]interface{})
+			validations.Pattern = &keycloak.RealmUserProfileValidationPattern{
+				Pattern:      r["pattern"].(string),
+				ErrorMessage: r["error_message"].(string),
+			}
+		}
+
+		if _, ok := data["email"]; ok {
+			validations.Email = &map[string]interface{}{}
+		}
+
+		if _, ok := data["local_date"]; ok {
+			validations.LocalDate = &map[string]interface{}{}
+		}
+
+		if val, ok := data["person_name_prohibited_characters"]; ok && len(val.([]interface{})) > 0 {
+			if r := val.([]interface{})[0]; r == nil {
+				validations.PersonNameProhibitedChars = &keycloak.RealmUserProfileValidationProhibited{}
+			} else {
+				validations.PersonNameProhibitedChars = &keycloak.RealmUserProfileValidationProhibited{
+					ErrorMessage: r.(map[string]interface{})["error_message"].(string),
+				}
+			}
+
+		}
+
+		if val, ok := data["username_prohibited_characters"]; ok && len(val.([]interface{})) > 0 {
+			if r := val.([]interface{})[0]; r == nil {
+				validations.UsernameProhibitedChars = &keycloak.RealmUserProfileValidationProhibited{}
+			} else {
+				validations.UsernameProhibitedChars = &keycloak.RealmUserProfileValidationProhibited{
+					ErrorMessage: r.(map[string]interface{})["error_message"].(string),
+				}
+			}
+		}
+
+		if val, ok := data["options"]; ok && len(val.([]interface{})) > 0 {
+			r := val.([]interface{})[0].(map[string]interface{})
+			validations.Options = &keycloak.RealmUserProfileValidationOptions{
+				Options: r["options"].([]string),
+			}
+		}
 
 		attribute.Validations = &validations
 	}
@@ -413,17 +483,19 @@ func getRealmUserProfileAttributeData(attr *keycloak.RealmUserProfileAttribute) 
 	}
 
 	if attr.Validations != nil {
-		validations := make([]interface{}, 0)
-		for name, config := range attr.Validations {
-			validator := make(map[string]interface{})
+		validations := make(map[string]interface{})
 
-			validator["name"] = name
+		validations["length"] = attr.Validations.Length
+		validations["pattern"] = attr.Validations.Pattern
 
-			c, _ := json.Marshal(config)
-			validator["config"] = string(c)
+		// for name, config := range attr.Validations {
+		// 	validator := make(map[string]interface{})
 
-			validations = append(validations, validator)
-		}
+		// 	c, _ := json.Marshal(config)
+		// 	validator["config"] = string(c)
+
+		// 	validations = append(validations, validator)
+		// }
 		attributeData["validator"] = validations
 	}
 

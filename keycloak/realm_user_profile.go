@@ -20,48 +20,46 @@ type RealmUserProfileSelector struct {
 	Scopes []string `json:"scopes,omitempty"`
 }
 
+type RealmUserProfileValidationLength struct {
+	Min          int  `json:"min,omitempty"`
+	Max          int  `json:"max,omitempty"`
+	TrimDisabled bool `json:"trim_disabled,omitempty"`
+}
+
+type RealmUserProfileValidationInteger struct {
+	Min int `json:"min,omitempty"`
+	Max int `json:"max,omitempty"`
+}
+
+type RealmUserProfileValidationDouble struct {
+	Min float64 `json:"min,omitempty"`
+	Max float64 `json:"max,omitempty"`
+}
+
+type RealmUserProfileValidationPattern struct {
+	Pattern      string `json:"pattern,omitempty"`
+	ErrorMessage string `json:"error-message,omitempty"`
+}
+
+type RealmUserProfileValidationProhibited struct {
+	ErrorMessage string `json:"error-message,omitempty"`
+}
+
+type RealmUserProfileValidationOptions struct {
+	Options []string `json:"options,omitempty"`
+}
+
 type RealmUserProfileValidationConfig struct {
-	Length struct {
-		Min          int  `json:"min,omitempty"`
-		Max          int  `json:"max,omitempty"`
-		TrimDisabled bool `json:"trim_disabled,omitempty"`
-	} `json:"length,omitempty"`
-
-	Integer struct {
-		Min int `json:"min,omitempty"`
-		Max int `json:"max,omitempty"`
-	} `json:"integer,omitempty"`
-
-	Double struct {
-		Min float64 `json:"min,omitempty"`
-		Max float64 `json:"max,omitempty"`
-	} `json:"double,omitempty"`
-
-	URI struct {
-	} `json:"uri,omitempty"`
-
-	Pattern struct {
-		Pattern      string `json:"pattern,omitempty"`
-		ErrorMessage string `json:"error-message,omitempty"`
-	} `json:"pattern,omitempty"`
-
-	Email struct {
-	} `json:"email,omitempty"`
-
-	LocalDate struct {
-	} `json:"local-date,omitempty"`
-
-	PersonNameProhibitedCharacters struct {
-		ErrorMessage string `json:"error-message,omitempty"`
-	} `json:"person-name-prohibited-characters,omitempty"`
-
-	UsernameProhibitedCharacters struct {
-		ErrorMessage string `json:"error-message,omitempty"`
-	} `json:"username-prohibited-characters,omitempty"`
-
-	Options struct {
-		Options []string `json:"options,omitempty"`
-	} `json:"options,omitempty"`
+	Length                    *RealmUserProfileValidationLength     `json:"length,omitempty"`
+	Integer                   *RealmUserProfileValidationInteger    `json:"integer,omitempty"`
+	Double                    *RealmUserProfileValidationDouble     `json:"double,omitempty"`
+	URI                       *map[string]interface{}               `json:"uri,omitempty"`
+	Pattern                   *RealmUserProfileValidationPattern    `json:"pattern,omitempty"`
+	Email                     *map[string]interface{}               `json:"email,omitempty"`
+	LocalDate                 *map[string]interface{}               `json:"local-date,omitempty"`
+	PersonNameProhibitedChars *RealmUserProfileValidationProhibited `json:"person-name-prohibited-characters,omitempty"`
+	UsernameProhibitedChars   *RealmUserProfileValidationProhibited `json:"username-prohibited-characters,omitempty"`
+	Options                   *RealmUserProfileValidationOptions    `json:"options,omitempty"`
 }
 
 type RealmUserProfileAttribute struct {

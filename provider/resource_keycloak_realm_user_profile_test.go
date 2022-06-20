@@ -73,12 +73,12 @@ func TestAccKeycloakRealmUserProfile_basicFull(t *testing.T) {
 					Edit: []string{"admin", "user"},
 					View: []string{"admin", "user"},
 				},
-				Validations: map[string]keycloak.RealmUserProfileValidationConfig{
-					"person-name-prohibited-characters": nil,
-					"pattern": map[string]interface{}{
-						"pattern":       "^[a-z]+$",
-						"error_message": "Error!"},
-				},
+				// Validations: map[string]keycloak.RealmUserProfileValidationConfig{
+				// 	"person-name-prohibited-characters": nil,
+				// 	"pattern": map[string]interface{}{
+				// 		"pattern":       "^[a-z]+$",
+				// 		"error_message": "Error!"},
+				// },
 				Annotations: map[string]string{"foo": "bar"},
 			},
 			// {
@@ -162,95 +162,95 @@ func TestAccKeycloakRealmUserProfile_group(t *testing.T) {
 }
 
 func TestAccKeycloakRealmUserProfile_attributeValidator(t *testing.T) {
-	skipIfVersionIsLessThanOrEqualTo(testCtx, t, keycloakClient, keycloak.Version_14)
+	// skipIfVersionIsLessThanOrEqualTo(testCtx, t, keycloakClient, keycloak.Version_14)
 
-	realmName := acctest.RandomWithPrefix("tf-acc")
+	// realmName := acctest.RandomWithPrefix("tf-acc")
 
-	withoutValidator := &keycloak.RealmUserProfile{
-		Attributes: []*keycloak.RealmUserProfileAttribute{
-			{
-				Name: "attribute",
-			},
-		},
-	}
+	// withoutValidator := &keycloak.RealmUserProfile{
+	// 	Attributes: []*keycloak.RealmUserProfileAttribute{
+	// 		{
+	// 			Name: "attribute",
+	// 		},
+	// 	},
+	// }
 
-	withInitialConfig := &keycloak.RealmUserProfile{
-		Attributes: []*keycloak.RealmUserProfileAttribute{
-			{
-				Name: "attribute",
-				Validations: map[string]keycloak.RealmUserProfileValidationConfig{
-					"length": map[string]interface{}{"min": "5", "max": "10"},
-				},
-			},
-		},
-	}
+	// withInitialConfig := &keycloak.RealmUserProfile{
+	// 	Attributes: []*keycloak.RealmUserProfileAttribute{
+	// 		{
+	// 			Name: "attribute",
+	// 			Validations: map[string]keycloak.RealmUserProfileValidationConfig{
+	// 				"length": map[string]interface{}{"min": "5", "max": "10"},
+	// 			},
+	// 		},
+	// 	},
+	// }
 
-	withNewConfig := &keycloak.RealmUserProfile{
-		Attributes: []*keycloak.RealmUserProfileAttribute{
-			{
-				Name: "attribute",
-				Validations: map[string]keycloak.RealmUserProfileValidationConfig{
-					"length": map[string]interface{}{"min": "6", "max": "10"},
-				},
-			},
-		},
-	}
+	// withNewConfig := &keycloak.RealmUserProfile{
+	// 	Attributes: []*keycloak.RealmUserProfileAttribute{
+	// 		{
+	// 			Name: "attribute",
+	// 			Validations: map[string]keycloak.RealmUserProfileValidationConfig{
+	// 				"length": map[string]interface{}{"min": "6", "max": "10"},
+	// 			},
+	// 		},
+	// 	},
+	// }
 
-	withNewValidator := &keycloak.RealmUserProfile{
-		Attributes: []*keycloak.RealmUserProfileAttribute{
-			{
-				Name: "attribute",
-				Validations: map[string]keycloak.RealmUserProfileValidationConfig{
-					"person-name-prohibited-characters": map[string]interface{}{},
-					"length":                            map[string]interface{}{"min": "6", "max": "10"},
-				},
-			},
-		},
-	}
+	// withNewValidator := &keycloak.RealmUserProfile{
+	// 	Attributes: []*keycloak.RealmUserProfileAttribute{
+	// 		{
+	// 			Name: "attribute",
+	// 			Validations: map[string]keycloak.RealmUserProfileValidationConfig{
+	// 				"person-name-prohibited-characters": map[string]interface{}{},
+	// 				"length":                            map[string]interface{}{"min": "6", "max": "10"},
+	// 			},
+	// 		},
+	// 	},
+	// }
 
-	resource.Test(t, resource.TestCase{
-		ProviderFactories: testAccProviderFactories,
-		PreCheck:          func() { testAccPreCheck(t) },
-		CheckDestroy:      testAccCheckKeycloakRealmUserProfileDestroy(),
-		Steps: []resource.TestStep{
-			{
-				Config: testKeycloakRealmUserProfile_template(realmName, withoutValidator),
-				Check: testAccCheckKeycloakRealmUserProfileStateEqual(
-					"keycloak_realm_user_profile.realm_user_profile", withoutValidator,
-				),
-			},
-			{
-				Config: testKeycloakRealmUserProfile_template(realmName, withInitialConfig),
-				Check: testAccCheckKeycloakRealmUserProfileStateEqual(
-					"keycloak_realm_user_profile.realm_user_profile", withInitialConfig,
-				),
-			},
-			{
-				Config: testKeycloakRealmUserProfile_template(realmName, withNewConfig),
-				Check: testAccCheckKeycloakRealmUserProfileStateEqual(
-					"keycloak_realm_user_profile.realm_user_profile", withNewConfig,
-				),
-			},
-			{
-				Config: testKeycloakRealmUserProfile_template(realmName, withNewValidator),
-				Check: testAccCheckKeycloakRealmUserProfileStateEqual(
-					"keycloak_realm_user_profile.realm_user_profile", withNewValidator,
-				),
-			},
-			{
-				Config: testKeycloakRealmUserProfile_template(realmName, withNewConfig),
-				Check: testAccCheckKeycloakRealmUserProfileStateEqual(
-					"keycloak_realm_user_profile.realm_user_profile", withNewConfig,
-				),
-			},
-			{
-				Config: testKeycloakRealmUserProfile_template(realmName, withoutValidator),
-				Check: testAccCheckKeycloakRealmUserProfileStateEqual(
-					"keycloak_realm_user_profile.realm_user_profile", withoutValidator,
-				),
-			},
-		},
-	})
+	// resource.Test(t, resource.TestCase{
+	// 	ProviderFactories: testAccProviderFactories,
+	// 	PreCheck:          func() { testAccPreCheck(t) },
+	// 	CheckDestroy:      testAccCheckKeycloakRealmUserProfileDestroy(),
+	// 	Steps: []resource.TestStep{
+	// 		{
+	// 			Config: testKeycloakRealmUserProfile_template(realmName, withoutValidator),
+	// 			Check: testAccCheckKeycloakRealmUserProfileStateEqual(
+	// 				"keycloak_realm_user_profile.realm_user_profile", withoutValidator,
+	// 			),
+	// 		},
+	// 		{
+	// 			Config: testKeycloakRealmUserProfile_template(realmName, withInitialConfig),
+	// 			Check: testAccCheckKeycloakRealmUserProfileStateEqual(
+	// 				"keycloak_realm_user_profile.realm_user_profile", withInitialConfig,
+	// 			),
+	// 		},
+	// 		{
+	// 			Config: testKeycloakRealmUserProfile_template(realmName, withNewConfig),
+	// 			Check: testAccCheckKeycloakRealmUserProfileStateEqual(
+	// 				"keycloak_realm_user_profile.realm_user_profile", withNewConfig,
+	// 			),
+	// 		},
+	// 		{
+	// 			Config: testKeycloakRealmUserProfile_template(realmName, withNewValidator),
+	// 			Check: testAccCheckKeycloakRealmUserProfileStateEqual(
+	// 				"keycloak_realm_user_profile.realm_user_profile", withNewValidator,
+	// 			),
+	// 		},
+	// 		{
+	// 			Config: testKeycloakRealmUserProfile_template(realmName, withNewConfig),
+	// 			Check: testAccCheckKeycloakRealmUserProfileStateEqual(
+	// 				"keycloak_realm_user_profile.realm_user_profile", withNewConfig,
+	// 			),
+	// 		},
+	// 		{
+	// 			Config: testKeycloakRealmUserProfile_template(realmName, withoutValidator),
+	// 			Check: testAccCheckKeycloakRealmUserProfileStateEqual(
+	// 				"keycloak_realm_user_profile.realm_user_profile", withoutValidator,
+	// 			),
+	// 		},
+	// 	},
+	// })
 }
 
 func TestAccKeycloakRealmUserProfile_attributePermissions(t *testing.T) {
