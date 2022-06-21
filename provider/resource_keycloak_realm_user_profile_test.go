@@ -413,11 +413,45 @@ resource "keycloak_realm_user_profile" "realm_user_profile" {
 
 		{{- if $attribute.Validations }}
         validator {
+			{{- if $attribute.Validations.Length }}
+			length {
+				min = {{ $attribute.Validations.Length.Min }}
+				max = {{ $attribute.Validations.Length.Max }}
+				trim_disabled = min = {{ $attribute.Validations.Length.TrimDisabled }}
+			}
+			{{- end }}
+			
+			{{- if $attribute.Validations.Integer }}
+			integer {
+				min = {{ $attribute.Validations.Integer.Min }}
+				max = {{ $attribute.Validations.Integer.Max }}
+			}
+			{{- end }}
+
+			{{- if $attribute.Validations.Double }}
+			double {
+				min = {{ $attribute.Validations.Double.Min }}
+				max = {{ $attribute.Validations.Double.Max }}
+			}
+			{{- end }}
+
+			{{- if $attribute.Validations.URI }}
+			uri {}
+			{{- end }}
+
             {{- if $attribute.Validations.Pattern }}
 			pattern {
 				pattern = "{{ $attribute.Validations.Pattern.Pattern }}"
 				error_message = "{{ $attribute.Validations.Pattern.ErrorMessage }}"
 			}
+			{{- end }}
+
+			{{- if $attribute.Validations.Email }}
+			email {}
+			{{- end }}
+
+			{{- if $attribute.Validations.LocalDate }}
+			local_date {}
 			{{- end }}
 
 			{{- if $attribute.Validations.PersonNameProhibitedChars }}
@@ -426,7 +460,26 @@ resource "keycloak_realm_user_profile" "realm_user_profile" {
 				error_message = "{{ $attribute.Validations.PersonNameProhibitedChars.ErrorMessage }}"
 				{{- end }}
 			}
-			{{- end}}
+			{{- end }}
+
+			{{- if $attribute.Validations.UsernameProhibitedChars }}
+			username_prohibited_characters {
+				{{- if $attribute.Validations.UsernameProhibitedChars.ErrorMessage }}
+				error_message = "{{ $attribute.Validations.UsernameProhibitedChars.ErrorMessage }}"
+				{{- end }}
+			}
+			{{- end }}
+
+			{{- if $attribute.Validation.Options }}
+			options {
+				options = [
+					{{- range $attribute.Validation.Options.Options }}
+					"{{ . }}",
+					{{- end }}
+				]
+			}
+			{{- end }}
+
         }
 		{{- end }}
 
