@@ -97,14 +97,6 @@ func TestAccKeycloakRealmUserProfile_basicFull(t *testing.T) {
 
 				Annotations: map[string]string{"foo": "bar"},
 			},
-			// {
-			// 	Name: "attribute3",
-			// 	Validations: map[string]keycloak.RealmUserProfileValidationConfig{
-			// 		"options": map[string]interface{}{
-			// 			"options": `["option1","option2","option3"]`,
-			// 		},
-			// 	},
-			// },
 		},
 		Groups: []*keycloak.RealmUserProfileGroup{
 			{Name: "group", DisplayDescription: "Description", DisplayHeader: "Header", Annotations: map[string]string{"foo": "bar"}},
@@ -268,6 +260,109 @@ func TestAccKeycloakRealmUserProfile_attributeValidator(t *testing.T) {
 				Config: testKeycloakRealmUserProfile_template(realmName, withoutValidator),
 				Check: testAccCheckKeycloakRealmUserProfileStateEqual(
 					"keycloak_realm_user_profile.realm_user_profile", withoutValidator,
+				),
+			},
+		},
+	})
+}
+
+func TestAccKeycloakRealmUserProfile_options(t *testing.T) {
+	skipIfVersionIsLessThanOrEqualTo(testCtx, t, keycloakClient, keycloak.Version_14)
+
+	realmName := acctest.RandomWithPrefix("tf-acc")
+
+	withInitialOptions := &keycloak.RealmUserProfile{
+		Attributes: []*keycloak.RealmUserProfileAttribute{
+			{
+				Name: "attribute",
+				Required: &keycloak.RealmUserProfileRequired{
+					Roles: []string{"admin", "user"},
+				},
+				Validations: &keycloak.RealmUserProfileValidationConfig{
+					Options: &keycloak.RealmUserProfileValidationOptions{
+						Options: []string{"option1", "option3", "option4"},
+					},
+				},
+			},
+		},
+	}
+
+	withNewOptions := &keycloak.RealmUserProfile{
+		Attributes: []*keycloak.RealmUserProfileAttribute{
+			{
+				Name: "attribute",
+				Required: &keycloak.RealmUserProfileRequired{
+					Roles: []string{"admin", "user"},
+				},
+				Validations: &keycloak.RealmUserProfileValidationConfig{
+					Options: &keycloak.RealmUserProfileValidationOptions{
+						Options: []string{"option1", "option2", "option3", "option4"},
+					},
+				},
+			},
+		},
+	}
+
+	withNewSmallerOptions := &keycloak.RealmUserProfile{
+		Attributes: []*keycloak.RealmUserProfileAttribute{
+			{
+				Name: "attribute",
+				Required: &keycloak.RealmUserProfileRequired{
+					Roles: []string{"admin", "user"},
+				},
+				Validations: &keycloak.RealmUserProfileValidationConfig{
+					Options: &keycloak.RealmUserProfileValidationOptions{
+						Options: []string{"option1", "option6"},
+					},
+				},
+			},
+		},
+	}
+
+	withoutOptions := &keycloak.RealmUserProfile{
+		Attributes: []*keycloak.RealmUserProfileAttribute{
+			{
+				Name: "attribute",
+				Required: &keycloak.RealmUserProfileRequired{
+					Roles: []string{"admin", "user"},
+				},
+			},
+		},
+	}
+
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviderFactories,
+		PreCheck:          func() { testAccPreCheck(t) },
+		CheckDestroy:      testAccCheckKeycloakRealmUserProfileDestroy(),
+		Steps: []resource.TestStep{
+			{
+				Config: testKeycloakRealmUserProfile_template(realmName, withInitialOptions),
+				Check: testAccCheckKeycloakRealmUserProfileStateEqual(
+					"keycloak_realm_user_profile.realm_user_profile", withInitialOptions,
+				),
+			},
+			{
+				Config: testKeycloakRealmUserProfile_template(realmName, withNewOptions),
+				Check: testAccCheckKeycloakRealmUserProfileStateEqual(
+					"keycloak_realm_user_profile.realm_user_profile", withNewOptions,
+				),
+			},
+			{
+				Config: testKeycloakRealmUserProfile_template(realmName, withNewSmallerOptions),
+				Check: testAccCheckKeycloakRealmUserProfileStateEqual(
+					"keycloak_realm_user_profile.realm_user_profile", withNewSmallerOptions,
+				),
+			},
+			{
+				Config: testKeycloakRealmUserProfile_template(realmName, withNewSmallerOptions),
+				Check: testAccCheckKeycloakRealmUserProfileStateEqual(
+					"keycloak_realm_user_profile.realm_user_profile", withNewSmallerOptions,
+				),
+			},
+			{
+				Config: testKeycloakRealmUserProfile_template(realmName, withoutOptions),
+				Check: testAccCheckKeycloakRealmUserProfileStateEqual(
+					"keycloak_realm_user_profile.realm_user_profile", withoutOptions,
 				),
 			},
 		},
