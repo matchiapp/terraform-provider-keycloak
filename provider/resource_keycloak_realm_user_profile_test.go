@@ -494,10 +494,10 @@ func TestAccKeycloakRealmUserProfile_attributePermissions(t *testing.T) {
 func testKeycloakRealmUserProfile_featureDisabled(realm string) string {
 	return fmt.Sprintf(`
 resource "keycloak_realm" "realm" {
-	realm = "%s"
+    realm = "%s"
 }
 resource "keycloak_realm_user_profile" "realm_user_profile" {
-	realm_id = keycloak_realm.realm.id
+    realm_id = keycloak_realm.realm.id
 }
 `, realm)
 }
@@ -505,161 +505,161 @@ resource "keycloak_realm_user_profile" "realm_user_profile" {
 func testKeycloakRealmUserProfile_template(realm string, realmUserProfile *keycloak.RealmUserProfile) string {
 	tmpl, err := template.New("").Funcs(template.FuncMap{"StringsJoin": strings.Join}).Parse(`
 resource "keycloak_realm" "realm" {
-	realm 	   = "{{ .realm }}"
+    realm 	   = "{{ .realm }}"
 
-	attributes = {
-		userProfileEnabled  = true
-	}
+    attributes = {
+        userProfileEnabled  = true
+    }
 }
 
 resource "keycloak_realm_user_profile" "realm_user_profile" {
-	realm_id = keycloak_realm.realm.id
+    realm_id = keycloak_realm.realm.id
 
-	{{- range $_, $attribute := .userProfile.Attributes }}
-	attribute {
-    	name = "{{ $attribute.Name }}"
-		{{- if $attribute.DisplayName }}
+    {{- range $_, $attribute := .userProfile.Attributes }}
+    attribute {
+        name = "{{ $attribute.Name }}"
+        {{- if $attribute.DisplayName }}
         display_name = "{{ $attribute.DisplayName }}"
-		{{- end }}
+        {{- end }}
 
-		{{- if $attribute.Group }}
+        {{- if $attribute.Group }}
         group = "{{ $attribute.Group }}"
-		{{- end }}
+        {{- end }}
 
-		{{- if $attribute.Selector }}
-		{{- if $attribute.Selector.Scopes }}
+        {{- if $attribute.Selector }}
+        {{- if $attribute.Selector.Scopes }}
         enabled_when_scope = ["{{ StringsJoin $attribute.Selector.Scopes "\", \"" }}"]
-		{{- end }}
-		{{- end }}
+        {{- end }}
+        {{- end }}
 
-		{{- if $attribute.Required }}
-		{{- if $attribute.Required.Roles }}
+        {{- if $attribute.Required }}
+        {{- if $attribute.Required.Roles }}
         required_for_roles = ["{{ StringsJoin $attribute.Required.Roles "\", \"" }}"]
-		{{- end }}
-		{{- end }}
+        {{- end }}
+        {{- end }}
 
-		{{- if $attribute.Required }}
-		{{- if $attribute.Required.Scopes }}
+        {{- if $attribute.Required }}
+        {{- if $attribute.Required.Scopes }}
         required_for_scopes = ["{{ StringsJoin $attribute.Required.Scopes "\", \"" }}"]
-		{{- end }}
-		{{- end }}
+        {{- end }}
+        {{- end }}
 
-		{{- if $attribute.Permissions }}
+        {{- if $attribute.Permissions }}
         permissions {
-			{{- if $attribute.Permissions.View }}
+            {{- if $attribute.Permissions.View }}
             view = ["{{ StringsJoin $attribute.Permissions.View "\", \"" }}"]
-			{{- end }}
-			{{- if $attribute.Permissions.Edit }}
+            {{- end }}
+            {{- if $attribute.Permissions.Edit }}
             edit = ["{{ StringsJoin $attribute.Permissions.Edit "\", \"" }}"]
-			{{- end }}
+            {{- end }}
         }
-		{{- end }}
+        {{- end }}
 
-		{{- if $attribute.Validations }}
+        {{- if $attribute.Validations }}
         validator {
-			{{- if $attribute.Validations.Length }}
-			length {
-				min = {{ $attribute.Validations.Length.Min }}
-				max = {{ $attribute.Validations.Length.Max }}
-				trim_disabled = {{ $attribute.Validations.Length.TrimDisabled }}
-			}
-			{{- end }}
-			
-			{{- if $attribute.Validations.Integer }}
-			integer {
-				min = {{ $attribute.Validations.Integer.Min }}
-				max = {{ $attribute.Validations.Integer.Max }}
-			}
-			{{- end }}
+            {{- if $attribute.Validations.Length }}
+            length {
+                min = {{ $attribute.Validations.Length.Min }}
+                max = {{ $attribute.Validations.Length.Max }}
+                trim_disabled = {{ $attribute.Validations.Length.TrimDisabled }}
+            }
+            {{- end }}
+            
+            {{- if $attribute.Validations.Integer }}
+            integer {
+                min = {{ $attribute.Validations.Integer.Min }}
+                max = {{ $attribute.Validations.Integer.Max }}
+            }
+            {{- end }}
 
-			{{- if $attribute.Validations.Double }}
-			double {
-				min = {{ $attribute.Validations.Double.Min }}
-				max = {{ $attribute.Validations.Double.Max }}
-			}
-			{{- end }}
+            {{- if $attribute.Validations.Double }}
+            double {
+                min = {{ $attribute.Validations.Double.Min }}
+                max = {{ $attribute.Validations.Double.Max }}
+            }
+            {{- end }}
 
-			{{- if $attribute.Validations.URI }}
-			uri {}
-			{{- end }}
+            {{- if $attribute.Validations.URI }}
+            uri {}
+            {{- end }}
 
             {{- if $attribute.Validations.Pattern }}
-			pattern {
-				pattern = "{{ $attribute.Validations.Pattern.Pattern }}"
-				error_message = "{{ $attribute.Validations.Pattern.ErrorMessage }}"
-			}
-			{{- end }}
+            pattern {
+                pattern = "{{ $attribute.Validations.Pattern.Pattern }}"
+                error_message = "{{ $attribute.Validations.Pattern.ErrorMessage }}"
+            }
+            {{- end }}
 
-			{{- if $attribute.Validations.Email }}
-			email {}
-			{{- end }}
+            {{- if $attribute.Validations.Email }}
+            email {}
+            {{- end }}
 
-			{{- if $attribute.Validations.LocalDate }}
-			local_date {}
-			{{- end }}
+            {{- if $attribute.Validations.LocalDate }}
+            local_date {}
+            {{- end }}
 
-			{{- if $attribute.Validations.PersonNameProhibitedChars }}
-			person_name_prohibited_characters {
-				{{- if $attribute.Validations.PersonNameProhibitedChars.ErrorMessage }}
-				error_message = "{{ $attribute.Validations.PersonNameProhibitedChars.ErrorMessage }}"
-				{{- end }}
-			}
-			{{- end }}
+            {{- if $attribute.Validations.PersonNameProhibitedChars }}
+            person_name_prohibited_characters {
+                {{- if $attribute.Validations.PersonNameProhibitedChars.ErrorMessage }}
+                error_message = "{{ $attribute.Validations.PersonNameProhibitedChars.ErrorMessage }}"
+                {{- end }}
+            }
+            {{- end }}
 
-			{{- if $attribute.Validations.UsernameProhibitedChars }}
-			username_prohibited_characters {
-				{{- if $attribute.Validations.UsernameProhibitedChars.ErrorMessage }}
-				error_message = "{{ $attribute.Validations.UsernameProhibitedChars.ErrorMessage }}"
-				{{- end }}
-			}
-			{{- end }}
+            {{- if $attribute.Validations.UsernameProhibitedChars }}
+            username_prohibited_characters {
+                {{- if $attribute.Validations.UsernameProhibitedChars.ErrorMessage }}
+                error_message = "{{ $attribute.Validations.UsernameProhibitedChars.ErrorMessage }}"
+                {{- end }}
+            }
+            {{- end }}
 
-			{{- if $attribute.Validations.Options }}
-			options {
-				options = [
-					{{- range $attribute.Validations.Options.Options }}
-					"{{ . }}",
-					{{- end }}
-				]
-			}
-			{{- end }}
+            {{- if $attribute.Validations.Options }}
+            options {
+                options = [
+                    {{- range $attribute.Validations.Options.Options }}
+                    "{{ . }}",
+                    {{- end }}
+                ]
+            }
+            {{- end }}
 
         }
-		{{- end }}
+        {{- end }}
 
-		{{- if $attribute.Annotations }}
+        {{- if $attribute.Annotations }}
         annotations = {
             {{- range $key, $value := $attribute.Annotations }}
             {{ $key }} = "{{ $value }}"
             {{- end }}
         }
-		{{- end }}
+        {{- end }}
     }
-	{{- end }}
+    {{- end }}
 
-	{{- range $_, $group := .userProfile.Groups }}
+    {{- range $_, $group := .userProfile.Groups }}
     group {
         name = "{{ $group.Name }}"
 
-		{{- if $group.DisplayHeader }}
+        {{- if $group.DisplayHeader }}
         display_header = "{{ $group.DisplayHeader }}"
-		{{- end }}
+        {{- end }}
 
-		{{- if $group.DisplayDescription }}
+        {{- if $group.DisplayDescription }}
         display_description = "{{ $group.DisplayDescription }}"
-		{{- end }}
+        {{- end }}
 
-		{{- if $group.Annotations }}
+        {{- if $group.Annotations }}
         annotations = {
             {{- range $key, $value := $group.Annotations }}
             {{ $key }} = "{{ $value }}"
             {{- end }}
         }
-		{{- end }}
+        {{- end }}
     }
-	{{- end }}
+    {{- end }}
 }
-	`)
+    `)
 	if err != nil {
 		fmt.Println(err)
 		return ""
