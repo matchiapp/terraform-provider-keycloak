@@ -162,15 +162,15 @@ resource "keycloak_realm_user_profile" "userprofile" {
 #### Pattern
 
 - `pattern`- (Required) The RegEx pattern to use when validating values.
-- `error-message`- (Optional) The key of the error message in i18n bundle. If not set a generic message is used.
+- `error_message`- (Optional) The key of the error message in i18n bundle. If not set a generic message is used.
 
 #### Person_name_prohibited_characters
 
-- `error-message`- (Optional) The key of the error message in i18n bundle. If not set a generic message is used.
+- `error_message`- (Optional) The key of the error message in i18n bundle. If not set a generic message is used.
 
 #### User_name_prohibited_characters
 
-- `error-message`- (Optional) The key of the error message in i18n bundle. If not set a generic message is used.
+- `error_message`- (Optional) The key of the error message in i18n bundle. If not set a generic message is used.
 
 #### Options
 
