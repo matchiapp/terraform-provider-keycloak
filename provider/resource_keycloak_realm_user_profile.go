@@ -485,8 +485,13 @@ func getRealmUserProfileAttributeData(attr *keycloak.RealmUserProfileAttribute) 
 	if attr.Validations != nil {
 		validations := make(map[string]interface{})
 
-		validations["length"] = attr.Validations.Length
-		validations["pattern"] = attr.Validations.Pattern
+		if attr.Validations.Pattern != nil {
+			l := make(map[string]interface{})
+			l["pattern"] = attr.Validations.Pattern.Pattern
+			l["error_message"] = attr.Validations.Pattern.ErrorMessage
+
+			validations["pattern"] = l
+		}
 
 		// for name, config := range attr.Validations {
 		// 	validator := make(map[string]interface{})

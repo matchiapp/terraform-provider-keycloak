@@ -53,6 +53,7 @@ func TestAccKeycloakRealmUserProfile_basicEmpty(t *testing.T) {
 }
 
 func TestAccKeycloakRealmUserProfile_basicFull(t *testing.T) {
+
 	skipIfVersionIsLessThanOrEqualTo(testCtx, t, keycloakClient, keycloak.Version_14)
 
 	realmName := acctest.RandomWithPrefix("tf-acc")
@@ -78,7 +79,7 @@ func TestAccKeycloakRealmUserProfile_basicFull(t *testing.T) {
 						Pattern:      "^[a-z]+$",
 						ErrorMessage: "Error!",
 					},
-					PersonNameProhibitedChars: &keycloak.RealmUserProfileValidationProhibited{},
+					// PersonNameProhibitedChars: &keycloak.RealmUserProfileValidationProhibited{},
 				},
 
 				Annotations: map[string]string{"foo": "bar"},
