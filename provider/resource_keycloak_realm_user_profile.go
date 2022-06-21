@@ -402,11 +402,11 @@ func getRealmUserProfileAttributeFromData(m map[string]interface{}) *keycloak.Re
 
 }
 
-func getRealmUserProfileAttributesFromData(data *schema.ResourceData) []*keycloak.RealmUserProfileAttribute {
+func getRealmUserProfileAttributesFromData(lst []interface{}) []*keycloak.RealmUserProfileAttribute {
 
 	attributes := make([]*keycloak.RealmUserProfileAttribute, 0)
 
-	for _, m := range data.Get("attribute").([]interface{}) {
+	for _, m := range lst {
 		userProfileAttribute := getRealmUserProfileAttributeFromData(m.(map[string]interface{}))
 		if userProfileAttribute.Name != "" {
 			attributes = append(attributes, userProfileAttribute)
@@ -450,7 +450,7 @@ func getRealmUserProfileGroupsFromData(lst []interface{}) []*keycloak.RealmUserP
 func getRealmUserProfileFromData(data *schema.ResourceData) *keycloak.RealmUserProfile {
 	realmUserProfile := &keycloak.RealmUserProfile{}
 
-	realmUserProfile.Attributes = getRealmUserProfileAttributesFromData(data)
+	realmUserProfile.Attributes = getRealmUserProfileAttributesFromData(data.Get("attribute").([]interface{}))
 	realmUserProfile.Groups = getRealmUserProfileGroupsFromData(data.Get("group").(*schema.Set).List())
 
 	return realmUserProfile

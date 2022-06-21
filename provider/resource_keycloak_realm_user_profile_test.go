@@ -517,7 +517,7 @@ resource "keycloak_realm_user_profile" "realm_user_profile" {
 
 	{{- range $_, $attribute := .userProfile.Attributes }}
 	attribute {
-        name = "{{ $attribute.Name }}"
+    	name = "{{ $attribute.Name }}"
 		{{- if $attribute.DisplayName }}
         display_name = "{{ $attribute.DisplayName }}"
 		{{- end }}
@@ -693,15 +693,9 @@ func testAccCheckKeycloakRealmUserProfileStateEqual(resourceName string, realmUs
 			return err
 		}
 
-		// s1 := strings.ReplaceAll(string(j1), "\\", "")
-		// s1 = strings.ReplaceAll(s1, "\"\"", "\"")
-		// s1 = strings.ReplaceAll(s1, "\"[", "[")
-		// s1 = strings.ReplaceAll(s1, "]\"", "]")
-
 		if !reflect.DeepEqual(realmUserProfile, realmUserProfileFromState) {
 			j1, _ := json.Marshal(realmUserProfile)
 			j2, _ := json.Marshal(realmUserProfileFromState)
-
 			return fmt.Errorf("%v\nshould be equal to\n%v", string(j1), string(j2))
 		}
 
