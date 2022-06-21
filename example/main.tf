@@ -8,9 +8,9 @@ terraform {
 }
 
 provider "keycloak" {
-  client_id          = "terraform"
-  client_secret      = "884e0f95-0f42-4a63-9b1f-94274655669e"
-  url                = "http://localhost:8080"
+  client_id     = "terraform"
+  client_secret = "884e0f95-0f42-4a63-9b1f-94274655669e"
+  url           = "http://localhost:8080"
   additional_headers = {
     foo = "bar"
   }
@@ -85,7 +85,7 @@ resource "keycloak_realm" "test" {
   web_authn_policy {
     relying_party_entity_name = "Example"
     relying_party_id          = "keycloak.example.com"
-    signature_algorithms      = [
+    signature_algorithms = [
       "ES256",
       "RS256"
     ]
@@ -94,7 +94,7 @@ resource "keycloak_realm" "test" {
   web_authn_passwordless_policy {
     relying_party_entity_name = "Example"
     relying_party_id          = "keycloak.example.com"
-    signature_algorithms      = [
+    signature_algorithms = [
       "ES256",
       "RS256"
     ]
@@ -122,21 +122,18 @@ resource "keycloak_realm_user_profile" "userprofile" {
 
     validator {
       person_name_prohibited_characters {}
-    }
-
-    validator {
       pattern {
-        pattern = "^[a-z]+$"
+        pattern       = "^[a-z]+$"
         error_message = "Nope"
       }
-    }
-
-    validator {
       length {
-        min = 1
-        max = 10
-        trim_disabled = false
       }
+
+      double {
+        max = 5.5
+        min = 1.5
+      }
+
     }
 
     annotations = {
@@ -149,12 +146,17 @@ resource "keycloak_realm_user_profile" "userprofile" {
   }
 
   attribute {
-    name = "field3"
+    name         = "field3"
     display_name = "Field 3"
 
     validator {
       options {
         options = ["option1", "option2"]
+      }
+      email {}
+      double {
+        max = 5.5
+        min = 1.5
       }
     }
   }
