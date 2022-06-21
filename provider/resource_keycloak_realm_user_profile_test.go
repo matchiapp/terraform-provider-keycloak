@@ -275,9 +275,6 @@ func TestAccKeycloakRealmUserProfile_options(t *testing.T) {
 		Attributes: []*keycloak.RealmUserProfileAttribute{
 			{
 				Name: "attribute",
-				Required: &keycloak.RealmUserProfileRequired{
-					Roles: []string{"admin", "user"},
-				},
 				Validations: &keycloak.RealmUserProfileValidationConfig{
 					Options: &keycloak.RealmUserProfileValidationOptions{
 						Options: []string{"option1", "option3", "option4"},
@@ -291,9 +288,6 @@ func TestAccKeycloakRealmUserProfile_options(t *testing.T) {
 		Attributes: []*keycloak.RealmUserProfileAttribute{
 			{
 				Name: "attribute",
-				Required: &keycloak.RealmUserProfileRequired{
-					Roles: []string{"admin", "user"},
-				},
 				Validations: &keycloak.RealmUserProfileValidationConfig{
 					Options: &keycloak.RealmUserProfileValidationOptions{
 						Options: []string{"option1", "option2", "option3", "option4"},
@@ -307,9 +301,6 @@ func TestAccKeycloakRealmUserProfile_options(t *testing.T) {
 		Attributes: []*keycloak.RealmUserProfileAttribute{
 			{
 				Name: "attribute",
-				Required: &keycloak.RealmUserProfileRequired{
-					Roles: []string{"admin", "user"},
-				},
 				Validations: &keycloak.RealmUserProfileValidationConfig{
 					Options: &keycloak.RealmUserProfileValidationOptions{
 						Options: []string{"option1", "option6"},
@@ -323,9 +314,6 @@ func TestAccKeycloakRealmUserProfile_options(t *testing.T) {
 		Attributes: []*keycloak.RealmUserProfileAttribute{
 			{
 				Name: "attribute",
-				Required: &keycloak.RealmUserProfileRequired{
-					Roles: []string{"admin", "user"},
-				},
 			},
 		},
 	}
