@@ -82,20 +82,59 @@ func TestAccKeycloakRealmUserProfile_basicFull(t *testing.T) {
 					PersonNameProhibitedChars: &keycloak.RealmUserProfileValidationProhibited{
 						ErrorMessage: "Error!",
 					},
-					Length: &keycloak.RealmUserProfileValidationLength{
-						Min:          5,
-						Max:          10,
-						TrimDisabled: false,
-					},
-					Integer:                 &keycloak.RealmUserProfileValidationInteger{Min: 5, Max: 99},
-					Double:                  &keycloak.RealmUserProfileValidationDouble{Min: 4.5, Max: 65.7},
-					URI:                     &map[string]interface{}{},
-					Email:                   &map[string]interface{}{},
-					LocalDate:               nil,
 					UsernameProhibitedChars: &keycloak.RealmUserProfileValidationProhibited{ErrorMessage: "Error!"},
 				},
 
 				Annotations: map[string]string{"foo": "bar"},
+			},
+			{
+				Name: "attribute3",
+				Validations: &keycloak.RealmUserProfileValidationConfig{
+					PersonNameProhibitedChars: &keycloak.RealmUserProfileValidationProhibited{},
+					UsernameProhibitedChars:   &keycloak.RealmUserProfileValidationProhibited{},
+				},
+			},
+			{
+				Name: "attribute4",
+				Validations: &keycloak.RealmUserProfileValidationConfig{
+					Length: &keycloak.RealmUserProfileValidationLength{
+						Min: 1,
+						Max: 2,
+					},
+					Integer: &keycloak.RealmUserProfileValidationInteger{
+						Min: 0,
+						Max: 50,
+					},
+				},
+			},
+			{
+				Name: "attribute5",
+				Validations: &keycloak.RealmUserProfileValidationConfig{
+					Length: &keycloak.RealmUserProfileValidationLength{
+						Min: 1,
+						Max: 4,
+					},
+					Double: &keycloak.RealmUserProfileValidationDouble{
+						Min: 0.01,
+						Max: 5.08,
+					},
+				},
+			},
+			{
+				Name: "attribute6",
+				Validations: &keycloak.RealmUserProfileValidationConfig{
+					URI:       &map[string]interface{}{},
+					Email:     &map[string]interface{}{},
+					LocalDate: &map[string]interface{}{},
+				},
+			},
+			{
+				Name: "attribute7",
+				Validations: &keycloak.RealmUserProfileValidationConfig{
+					Options: &keycloak.RealmUserProfileValidationOptions{
+						Options: []string{"1"},
+					},
+				},
 			},
 		},
 		Groups: []*keycloak.RealmUserProfileGroup{

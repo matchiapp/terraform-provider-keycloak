@@ -483,93 +483,76 @@ func getRealmUserProfileAttributeData(attr *keycloak.RealmUserProfileAttribute) 
 	}
 
 	if attr.Validations != nil {
-		validations := make([]map[string]interface{}, 1)
-		validations[0] = make(map[string]interface{})
+		validation := make(map[string]interface{})
 
 		if attr.Validations.Pattern != nil {
-
-			l := make([]map[string]interface{}, 1)
-			l[0] = make(map[string]interface{})
-			l[0]["pattern"] = attr.Validations.Pattern.Pattern
-			l[0]["error_message"] = attr.Validations.Pattern.ErrorMessage
-
-			validations[0]["pattern"] = l
+			validation["pattern"] = []map[string]interface{}{
+				{
+					"pattern":       attr.Validations.Pattern.Pattern,
+					"error_message": attr.Validations.Pattern.ErrorMessage,
+				},
+			}
 		}
 
 		if attr.Validations.PersonNameProhibitedChars != nil {
-			l := make([]map[string]interface{}, 1)
-			l[0] = make(map[string]interface{})
-			l[0]["error_message"] = attr.Validations.PersonNameProhibitedChars.ErrorMessage
-
-			validations[0]["person_name_prohibited_characters"] = l
+			validation["person_name_prohibited_characters"] = []map[string]interface{}{
+				{"error_message": attr.Validations.PersonNameProhibitedChars.ErrorMessage},
+			}
 		}
 
 		if attr.Validations.UsernameProhibitedChars != nil {
-			l := make([]map[string]interface{}, 1)
-			l[0] = make(map[string]interface{})
-			l[0]["error_message"] = attr.Validations.UsernameProhibitedChars.ErrorMessage
-
-			validations[0]["username_prohibited_characters"] = l
+			validation["username_prohibited_characters"] = []map[string]interface{}{
+				{"error_message": attr.Validations.UsernameProhibitedChars.ErrorMessage},
+			}
 		}
 
 		if attr.Validations.Length != nil {
-			l := make([]map[string]interface{}, 1)
-			l[0] = make(map[string]interface{})
-			l[0]["min"] = attr.Validations.Length.Min
-			l[0]["max"] = attr.Validations.Length.Max
-			l[0]["trim_disabled"] = attr.Validations.Length.TrimDisabled
-
-			validations[0]["length"] = l
+			validation["length"] = []map[string]interface{}{
+				{
+					"min":           attr.Validations.Length.Min,
+					"max":           attr.Validations.Length.Max,
+					"trim_disabled": attr.Validations.Length.TrimDisabled,
+				},
+			}
 		}
 
 		if attr.Validations.Integer != nil {
-			l := make([]map[string]interface{}, 1)
-			l[0] = make(map[string]interface{})
-			l[0]["min"] = attr.Validations.Integer.Min
-			l[0]["max"] = attr.Validations.Integer.Max
-
-			validations[0]["integer"] = l
+			validation["integer"] = []map[string]interface{}{
+				{
+					"min": attr.Validations.Integer.Min,
+					"max": attr.Validations.Integer.Max,
+				},
+			}
 		}
 
 		if attr.Validations.Double != nil {
-			l := make([]map[string]interface{}, 1)
-			l[0] = make(map[string]interface{})
-			l[0]["min"] = attr.Validations.Double.Min
-			l[0]["max"] = attr.Validations.Double.Max
-
-			validations[0]["double"] = l
+			validation["double"] = []map[string]interface{}{
+				{
+					"min": attr.Validations.Double.Min,
+					"max": attr.Validations.Double.Max,
+				},
+			}
 		}
 
 		if attr.Validations.URI != nil {
-			l := make([]map[string]interface{}, 1)
-			l[0] = make(map[string]interface{})
-
-			validations[0]["uri"] = l
+			validation["uri"] = []map[string]interface{}{{}}
 		}
 
 		if attr.Validations.Email != nil {
-			l := make([]map[string]interface{}, 1)
-			l[0] = make(map[string]interface{})
-
-			validations[0]["email"] = l
+			validation["email"] = []map[string]interface{}{{}}
 		}
 
 		if attr.Validations.LocalDate != nil {
-			l := make([]map[string]interface{}, 1)
-			l[0] = make(map[string]interface{})
-
-			validations[0]["local_date"] = l
+			validation["local_date"] = []map[string]interface{}{{}}
 		}
 
 		if attr.Validations.Options != nil {
-			l := make([]map[string]interface{}, 1)
-			l[0] = make(map[string]interface{})
-			l[0]["options"] = attr.Validations.Options.Options
-
-			validations[0]["options"] = l
+			validation["options"] = []map[string]interface{}{
+				{"options": attr.Validations.Options.Options},
+			}
 		}
 
-		attributeData["validator"] = validations
+		attributeData["validator"] = []map[string]interface{}{validation}
 	}
 
 	if attr.Annotations != nil {
