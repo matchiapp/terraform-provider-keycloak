@@ -1024,7 +1024,7 @@ resource "keycloak_openid_client" "client" {
 }
 
 resource "keycloak_realm_user_profile" "userprofile" {
-    realm_id = keycloak_realm.test.id
+  realm_id = keycloak_realm.test.id
 
   attribute {
     name = "field0"
