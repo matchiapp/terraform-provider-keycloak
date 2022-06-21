@@ -483,14 +483,82 @@ func getRealmUserProfileAttributeData(attr *keycloak.RealmUserProfileAttribute) 
 	}
 
 	if attr.Validations != nil {
-		validations := make(map[string]interface{})
+		validations := make([]map[string]interface{}, 1)
+		validations[0] = make(map[string]interface{})
 
 		if attr.Validations.Pattern != nil {
-			l := make(map[string]interface{})
-			l["pattern"] = attr.Validations.Pattern.Pattern
-			l["error_message"] = attr.Validations.Pattern.ErrorMessage
 
-			validations["pattern"] = l
+			l := make([]map[string]interface{}, 1)
+			l[0] = make(map[string]interface{})
+			l[0]["pattern"] = attr.Validations.Pattern.Pattern
+			l[0]["error_message"] = attr.Validations.Pattern.ErrorMessage
+
+			validations[0]["pattern"] = l
+		}
+
+		if attr.Validations.PersonNameProhibitedChars != nil {
+			l := make([]map[string]interface{}, 1)
+			l[0] = make(map[string]interface{})
+			l[0]["error_message"] = attr.Validations.PersonNameProhibitedChars.ErrorMessage
+
+			validations[0]["person_name_prohibited_characters"] = l
+		}
+
+		if attr.Validations.Length != nil {
+			l := make([]map[string]interface{}, 1)
+			l[0] = make(map[string]interface{})
+			l[0]["min"] = attr.Validations.Length.Min
+			l[0]["max"] = attr.Validations.Length.Max
+			l[0]["trim_disabled"] = attr.Validations.Length.TrimDisabled
+
+			validations[0]["length"] = l
+		}
+
+		if attr.Validations.Integer != nil {
+			l := make([]map[string]interface{}, 1)
+			l[0] = make(map[string]interface{})
+			l[0]["min"] = attr.Validations.Integer.Min
+			l[0]["max"] = attr.Validations.Integer.Max
+
+			validations[0]["integer"] = l
+		}
+
+		if attr.Validations.Double != nil {
+			l := make([]map[string]interface{}, 1)
+			l[0] = make(map[string]interface{})
+			l[0]["min"] = attr.Validations.Double.Min
+			l[0]["max"] = attr.Validations.Double.Max
+
+			validations[0]["double"] = l
+		}
+
+		if attr.Validations.URI != nil {
+			l := make([]map[string]interface{}, 1)
+			l[0] = make(map[string]interface{})
+
+			validations[0]["uri"] = l
+		}
+
+		if attr.Validations.Email != nil {
+			l := make([]map[string]interface{}, 1)
+			l[0] = make(map[string]interface{})
+
+			validations[0]["email"] = l
+		}
+
+		if attr.Validations.LocalDate != nil {
+			l := make([]map[string]interface{}, 1)
+			l[0] = make(map[string]interface{})
+
+			validations[0]["local_date"] = l
+		}
+
+		if attr.Validations.Options != nil {
+			l := make([]map[string]interface{}, 1)
+			l[0] = make(map[string]interface{})
+			l[0]["options"] = attr.Validations.Options.Options
+
+			validations[0]["options"] = l
 		}
 
 		// for name, config := range attr.Validations {

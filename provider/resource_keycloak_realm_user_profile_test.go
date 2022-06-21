@@ -79,7 +79,20 @@ func TestAccKeycloakRealmUserProfile_basicFull(t *testing.T) {
 						Pattern:      "^[a-z]+$",
 						ErrorMessage: "Error!",
 					},
-					// PersonNameProhibitedChars: &keycloak.RealmUserProfileValidationProhibited{},
+					PersonNameProhibitedChars: &keycloak.RealmUserProfileValidationProhibited{
+						ErrorMessage: "Error!",
+					},
+					Length: &keycloak.RealmUserProfileValidationLength{
+						Min:          5,
+						Max:          10,
+						TrimDisabled: false,
+					},
+					Integer:                 &keycloak.RealmUserProfileValidationInteger{Min: 5, Max: 99},
+					Double:                  &keycloak.RealmUserProfileValidationDouble{Min: 4.5, Max: 65.7},
+					URI:                     &map[string]interface{}{},
+					Email:                   &map[string]interface{}{},
+					LocalDate:               nil,
+					UsernameProhibitedChars: &keycloak.RealmUserProfileValidationProhibited{ErrorMessage: "Error!"},
 				},
 
 				Annotations: map[string]string{"foo": "bar"},
@@ -426,7 +439,7 @@ resource "keycloak_realm_user_profile" "realm_user_profile" {
 			length {
 				min = {{ $attribute.Validations.Length.Min }}
 				max = {{ $attribute.Validations.Length.Max }}
-				trim_disabled = min = {{ $attribute.Validations.Length.TrimDisabled }}
+				trim_disabled = {{ $attribute.Validations.Length.TrimDisabled }}
 			}
 			{{- end }}
 			
@@ -479,10 +492,10 @@ resource "keycloak_realm_user_profile" "realm_user_profile" {
 			}
 			{{- end }}
 
-			{{- if $attribute.Validation.Options }}
+			{{- if $attribute.Validations.Options }}
 			options {
 				options = [
-					{{- range $attribute.Validation.Options.Options }}
+					{{- range $attribute.Validations.Options.Options }}
 					"{{ . }}",
 					{{- end }}
 				]
