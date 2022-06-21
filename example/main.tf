@@ -132,24 +132,15 @@ resource "keycloak_realm_user_profile" "userprofile" {
     }
 
     validator {
-<<<<<<< Updated upstream
-      person_name_prohibited_characters {}
-=======
-
->>>>>>> Stashed changes
       pattern {
         pattern       = "^[a-z]+$"
         error_message = "Nope"
       }
-<<<<<<< Updated upstream
-      length {
-=======
 
       length {
         min = 1
         max = 10
         trim_disabled = true
->>>>>>> Stashed changes
       }
 
       double {
