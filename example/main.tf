@@ -127,6 +127,8 @@ resource "keycloak_realm_user_profile" "userprofile" {
         error_message = "Nope"
       }
       length {
+        min = 5
+        max = 10
       }
 
       double {
