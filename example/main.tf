@@ -218,11 +218,6 @@ resource "keycloak_realm_user_profile" "userprofile" {
       options {
         options = ["o1", "o2", "o3", "o4"]
       }
-      email {}
-      double {
-        max = 5.5
-        min = 1.5
-      }
     }
   }
 
