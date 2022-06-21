@@ -23,7 +23,7 @@ type RealmUserProfileSelector struct {
 type RealmUserProfileValidationLength struct {
 	Min          int  `json:"min,omitempty"`
 	Max          int  `json:"max,omitempty"`
-	TrimDisabled bool `json:"trim_disabled,omitempty"`
+	TrimDisabled bool `json:"trim-disabled,omitempty"`
 }
 
 type RealmUserProfileValidationInteger struct {
