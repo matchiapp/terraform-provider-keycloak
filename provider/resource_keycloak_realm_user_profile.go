@@ -209,6 +209,7 @@ func resourceKeycloakRealmUserProfile() *schema.Resource {
 											Schema: map[string]*schema.Schema{
 												"options": {
 													Type:     schema.TypeList,
+													MinItems: 1,
 													Optional: true,
 													Elem:     &schema.Schema{Type: schema.TypeString},
 												},
