@@ -504,6 +504,14 @@ func getRealmUserProfileAttributeData(attr *keycloak.RealmUserProfileAttribute) 
 			validations[0]["person_name_prohibited_characters"] = l
 		}
 
+		if attr.Validations.UsernameProhibitedChars != nil {
+			l := make([]map[string]interface{}, 1)
+			l[0] = make(map[string]interface{})
+			l[0]["error_message"] = attr.Validations.UsernameProhibitedChars.ErrorMessage
+
+			validations[0]["username_prohibited_characters"] = l
+		}
+
 		if attr.Validations.Length != nil {
 			l := make([]map[string]interface{}, 1)
 			l[0] = make(map[string]interface{})
@@ -561,14 +569,6 @@ func getRealmUserProfileAttributeData(attr *keycloak.RealmUserProfileAttribute) 
 			validations[0]["options"] = l
 		}
 
-		// for name, config := range attr.Validations {
-		// 	validator := make(map[string]interface{})
-
-		// 	c, _ := json.Marshal(config)
-		// 	validator["config"] = string(c)
-
-		// 	validations = append(validations, validator)
-		// }
 		attributeData["validator"] = validations
 	}
 
