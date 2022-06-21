@@ -87,11 +87,11 @@ func resourceKeycloakRealmUserProfile() *schema.Resource {
 											Schema: map[string]*schema.Schema{
 												"min": {
 													Type:     schema.TypeInt,
-													Optional: true,
+													Required: true,
 												},
 												"max": {
 													Type:     schema.TypeInt,
-													Optional: true,
+													Required: true,
 												},
 												"trim_disabled": {
 													Type:     schema.TypeBool,
@@ -108,11 +108,11 @@ func resourceKeycloakRealmUserProfile() *schema.Resource {
 											Schema: map[string]*schema.Schema{
 												"min": {
 													Type:     schema.TypeInt,
-													Optional: true,
+													Required: true,
 												},
 												"max": {
 													Type:     schema.TypeInt,
-													Optional: true,
+													Required: true,
 												},
 											},
 										},
@@ -125,11 +125,11 @@ func resourceKeycloakRealmUserProfile() *schema.Resource {
 											Schema: map[string]*schema.Schema{
 												"min": {
 													Type:     schema.TypeFloat,
-													Optional: true,
+													Required: true,
 												},
 												"max": {
 													Type:     schema.TypeFloat,
-													Optional: true,
+													Required: true,
 												},
 											},
 										},
@@ -150,7 +150,7 @@ func resourceKeycloakRealmUserProfile() *schema.Resource {
 											Schema: map[string]*schema.Schema{
 												"pattern": {
 													Type:     schema.TypeString,
-													Optional: true,
+													Required: true,
 												},
 												"error_message": {
 													Type:     schema.TypeString,
