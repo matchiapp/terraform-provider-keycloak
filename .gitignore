@@ -15,9 +15,6 @@ terraform-provider-keycloak
 .idea/
 .terraform/
 terraform.tfstate*
-*.log
-.terraform.lock.hcl
-terraform.d/
 
 .gradle/
 
@@ -32,5 +29,3 @@ site/
 *.zip
 
 .DS_Store
-
-!.vscode/launch.json
